@@ -87,6 +87,28 @@ app.get("/events",async(req,res) => {
 //   }
 // });
 
+//get events by id
+async function readEventById(eventId){
+    try{
+        const event = await Event.findById(eventId)
+        return event
+    } catch(error){
+        throw error
+    }
+}
+
+app.get("/events/:eventId", async (req,res) => {
+    try{
+        const event = await readEventById(req.params.eventId)
+        if(event){
+            res.json(event)
+        } else {
+            res.status(404).json({error: "Event not found"})
+        }
+    } catch(error){
+        res.status(500).json({error: "Failed to fetch event."})
+    }
+} )
 
 //Search box to read a event by its title from the Database
 async function readEventByTitle(eventTitle){
@@ -98,7 +120,7 @@ async function readEventByTitle(eventTitle){
     }
 }
 
-app.get("/events/:eventTitle", async (req,res) => {
+app.get("/events/title/:eventTitle", async (req,res) => {
     try{
         const event = await readEventByTitle(req.params.eventTitle)
         if(event){
