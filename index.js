@@ -8,7 +8,7 @@ initializeDatabase()
 
 const cors = require("cors");
 const corsOptions = {
-  origin: "https://meetup-app-frontend-opal.vercel.app/",
+  origin: "https://meetup-app-frontend-opal.vercel.app",
   credentials: true,
   optionSuccessStatus: 200,
 };
