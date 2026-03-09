@@ -8,7 +8,7 @@ const eventSchema  = new mongoose.Schema({
     description: String,
     topic: String,
     sessionTimings: String,
-    speakers: [String],
+    speakers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Speaker" }],
     price: Number,
     venue: String,
     address: String,

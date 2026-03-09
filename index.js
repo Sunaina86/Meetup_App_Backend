@@ -2,16 +2,36 @@ const express = require("express")
 const app = express()
 const {initializeDatabase} = require("./db/db.connect")
 const Event = require("./models/event.models")
+const Speaker =  require("./models/speaker.models")
 app.use(express.json())
 initializeDatabase()
 
 const cors = require("cors");
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "*",
   credentials: true,
   optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+
+async function createSpeaker(newSpeaker){
+    try{
+        const speaker = new Speaker(newSpeaker)
+        const saveSpeaker = await speaker.save()
+        return saveSpeaker
+    } catch(error){
+        throw error 
+    }
+    
+}
+app.post("/speakers",async(req,res)=>{
+    try{
+        const savedSpeaker = await createSpeaker(req.body)
+        res.status(201).json({message: "Speaker added successfully." , speaker: savedSpeaker})
+    } catch(error){
+        res.status(500).json({error: "Failed to add speaker"})
+    }
+})
 
 async function createEvent(newEvent){
     try{
@@ -36,7 +56,8 @@ app.post("/events",async(req,res)=>{
 
 async function readAllEvents(){
    try{
-      const allEvents = await Event.find()
+      const allEvents = await Event.find().populate("speakers")
+      console.log(allEvents)
       return allEvents
     } catch(error){
         console.log(error)
@@ -55,37 +76,6 @@ app.get("/events",async(req,res) => {
         res.status(500).json({error: "Failed to fetch events"})
     }
 })
-
-
-// app.get("/events", async (req, res) => {
-//   try {
-//     const { type, search } = req.query;
-
-//     let filter = {};
-
-//     // TYPE FILTER (Online / Offline / Both)
-//     if (type && type !== "Both") {
-//       filter.type = type;
-//     }
-
-//     // SEARCH FILTER (search by title OR tags)
-//     if (search && search.trim() !== "") {
-//       const regex = new RegExp(search, "i"); // case-insensitive
-
-//       filter.$or = [
-//         { title: { $regex: regex } },
-//         { tags: { $regex: regex } } // Ensure tags field exists in schema
-//       ];
-//     }
-
-//     const events = await Event.find(filter);
-
-//     res.json(events);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: "Failed to fetch events" });
-//   }
-// });
 
 //get events by id
 async function readEventById(eventId){
