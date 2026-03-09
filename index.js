@@ -80,7 +80,7 @@ app.get("/events",async(req,res) => {
 //get events by id
 async function readEventById(eventId){
     try{
-        const event = await Event.findById(eventId)
+        const event = await Event.findById(eventId).populate("speakers")
         return event
     } catch(error){
         throw error
@@ -103,7 +103,7 @@ app.get("/events/:eventId", async (req,res) => {
 //Search box to read a event by its title from the Database
 async function readEventByTitle(eventTitle){
     try{
-        const event = await Event.findOne({title:eventTitle})
+        const event = await Event.findOne({title:eventTitle}).populate("speakers")
         return event
     } catch(error){
         throw error
@@ -129,7 +129,7 @@ app.get("/events/title/:eventTitle", async (req,res) => {
 
 async function readEventByType(eventType){
     try{
-        const events = await Event.find({type:eventType})
+        const events = await Event.find({type:eventType}).populate("speakers")
         return events
     } catch(error){
         throw error
@@ -154,7 +154,7 @@ app.get("/events/type/:eventType", async (req,res) => {
 //Search box to read a event by its tags from the Database
 async function readEventByTag(eventTag){
     try{
-        const event = await Event.find({tags:eventTag})
+        const event = await Event.find({tags:eventTag}).populate("speakers")
         return event
     } catch(error){
         throw error
